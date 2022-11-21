@@ -5,7 +5,7 @@ import NewNote from "./pages/NewNote";
 
 function App() {
   return (
-    <Container>
+    <Container className="mt-4">
       <Routes>
         <Route path="/" element={<div>hey</div>} />
         <Route path="/new" element={<NewNote />} />
