@@ -10,14 +10,14 @@ import {
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import CreatableReactSelect from "react-select/creatable";
-import { NoteData, Tag } from "../types";
+import { Note, NoteData, Tag } from "../types";
 import { v4 as uuidV4 } from "uuid";
 
 type NoteFormProps = {
   onSubmit: (data: NoteData) => void;
   onnAddTag: (tag: Tag) => void;
   availableTags: Tag[];
-};
+} & Note;
 
 const NoteForm = ({ onSubmit, onnAddTag, availableTags }: NoteFormProps) => {
   const titleRef = useRef<HTMLInputElement>(null);
