@@ -7,6 +7,9 @@ import NewNote from "./pages/NewNote";
 import NoteList from "./pages/NoteList";
 import { NoteData, RawNote, Tag } from "./types";
 import { v4 as uuidV4 } from "uuid";
+import NoteLayout from "./components/NoteLayout";
+import Note from "./components/Note";
+import EditNote from "./components/EditNote";
 
 function App() {
   const [notes, setNotes] = useLocalStorage<RawNote[]>("NOTES", []);
@@ -30,6 +33,22 @@ function App() {
     });
   }
 
+  function onUpdateNote(id: string, { tags, ...data }: NoteData) {
+    setNotes((prevNotes) => {
+      return prevNotes.map((note) => {
+        if (note.id === id) {
+          return {
+            ...note,
+            ...data,
+            tagsId: tags.map((tag) => tag.id),
+          };
+        } else {
+          return note;
+        }
+      });
+    });
+  }
+
   function addTag(tag: Tag) {
     setTags((prev) => [...prev, tag]);
   }
@@ -37,7 +56,10 @@ function App() {
   return (
     <Container className="mt-4">
       <Routes>
-        <Route path="/" element={<NoteList availableTags={tags} />} />
+        <Route
+          path="/"
+          element={<NoteList notes={noteWithTags} availableTags={tags} />}
+        />
         <Route
           path="/new"
           element={
@@ -48,9 +70,18 @@ function App() {
             />
           }
         />
-        <Route path="/:id">
-          <Route index element={<h1>show</h1>} />
-          <Route path="edit" element={<h1>Edit</h1>} />
+        <Route path="/:id" element={<NoteLayout notes={noteWithTags} />}>
+          <Route index element={<Note />} />
+          <Route
+            path="edit"
+            element={
+              <EditNote
+                onSubmit={onUpdateNote}
+                onnAddTag={addTag}
+                availableTags={tags}
+              />
+            }
+          />
         </Route>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
