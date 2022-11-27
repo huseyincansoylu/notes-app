@@ -1,4 +1,4 @@
-import React, { FormEvent, useRef, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import {
   Button,
   Col,
@@ -10,19 +10,26 @@ import {
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import CreatableReactSelect from "react-select/creatable";
-import { Note, NoteData, Tag } from "../types";
+import { NoteData, Tag } from "../types";
 import { v4 as uuidV4 } from "uuid";
 
 type NoteFormProps = {
   onSubmit: (data: NoteData) => void;
   onnAddTag: (tag: Tag) => void;
   availableTags: Tag[];
-} & Note;
+} & Partial<NoteData>;
 
-const NoteForm = ({ onSubmit, onnAddTag, availableTags }: NoteFormProps) => {
+const NoteForm = ({
+  onSubmit,
+  onnAddTag,
+  availableTags,
+  title = "",
+  markdown = "",
+  tags = [],
+}: NoteFormProps) => {
   const titleRef = useRef<HTMLInputElement>(null);
   const markdownRef = useRef<HTMLTextAreaElement>(null);
-  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+  const [selectedTags, setSelectedTags] = useState<Tag[]>(tags);
 
   const navigate = useNavigate();
 
@@ -48,7 +55,7 @@ const NoteForm = ({ onSubmit, onnAddTag, availableTags }: NoteFormProps) => {
           <Col>
             <FormGroup controlId="title">
               <Form.Label>Title</Form.Label>
-              <Form.Control required ref={titleRef} />
+              <Form.Control required ref={titleRef} defaultValue={title} />
             </FormGroup>
           </Col>
           <Col>
@@ -83,7 +90,13 @@ const NoteForm = ({ onSubmit, onnAddTag, availableTags }: NoteFormProps) => {
         </Row>
         <FormGroup controlId="markdown">
           <Form.Label>Body</Form.Label>
-          <FormControl required as="textarea" rows={15} ref={markdownRef} />
+          <FormControl
+            required
+            as="textarea"
+            rows={15}
+            ref={markdownRef}
+            defaultValue={markdown}
+          />
         </FormGroup>
         <Stack direction="horizontal" gap={2} className="justify-content-end">
           <Button type="submit" variant="primary">
